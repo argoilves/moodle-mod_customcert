@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Handles verifying the code for a certificate.
+ * Handles verifying the code or ID for a certificate.
  *
  * @package   mod_customcert
  * @copyright 2017 Mark Nelson <markn@moodle.com>
@@ -84,14 +84,14 @@ if ($checkallofsite) {
     }
 }
 
-// The form we are using to verify these codes.
+// The form we are using to verify these codes and ID-s.
 $form = new \mod_customcert\verify_certificate_form($pageurl);
 
 if ($code) {
     $result = new stdClass();
     $result->issues = [];
 
-    // Ok, now check if the code is valid.
+    // Ok, now check if the code/ID is valid.
     $userfields = \mod_customcert\helper::get_all_user_name_fields('u');
     $sql = "SELECT ci.id, u.id as userid, $userfields, co.id as courseid,
                    co.fullname as coursefullname, c.id as certificateid,
@@ -103,17 +103,19 @@ if ($code) {
                 ON c.course = co.id
               JOIN {user} u
                 ON ci.userid = u.id
-             WHERE ci.code = :code";
+                WHERE ci.code = :code OR ci.id = :id";
+    
+    // Set both parameters to the same value
+    $params = ['code' => $code, 'id' => $code]; 
 
     if ($checkallofsite) {
         // Only people with the capability to verify all the certificates can verify any.
         if (!$canverifyallcertificates) {
             $sql .= " AND c.verifyany = 1";
         }
-        $params = ['code' => $code];
     } else {
         $sql .= " AND c.id = :customcertid";
-        $params = ['code' => $code, 'customcertid' => $customcert->id];
+        $params = ['customcertid' => $customcert->id];
     }
 
     // It is possible (though unlikely) that there is the same code for issued certificates.
