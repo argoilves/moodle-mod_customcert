@@ -33,6 +33,7 @@ $string['alignright'] = 'Right alignment';
 $string['awardedto'] = 'Awarded to';
 $string['cannotverifyallcertificates'] = 'You do not have the permission to verify all certificates on the site.';
 $string['certificate'] = 'Certificate';
+$string['certificateid'] = 'Certificate ID';
 $string['certificateexecutionperiod'] = 'Certificate execution period';
 $string['certificateexecutionperiod_desc'] = 'If not 0, the task will not process certificates whose course has been inactive or the last issue is older than the configured time. This may help to improve the performance of the scheduled task.';
 $string['certificatesperrun'] = 'Certificates per run';

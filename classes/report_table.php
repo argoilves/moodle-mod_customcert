@@ -85,7 +85,7 @@ class report_table extends \table_sql {
         if ($showexpiry) {
             $columns[] = 'timeexpires';
         }
-
+        $columns[] = 'certificateid'; // tunnistuse ID
         $columns[] = 'code';
 
         $headers = [];
@@ -98,6 +98,9 @@ class report_table extends \table_sql {
         if ($showexpiry) {
             $headers[] = get_string('expireson', 'customcertelement_expiry');
         }
+
+        $headers[] = get_string('certificateid', 'customcert');  // Lisa Tunnistuse ID veeru päis
+        $this->no_sorting('certificateid');
 
         $headers[] = get_string('code', 'customcert');
 
@@ -129,6 +132,8 @@ class report_table extends \table_sql {
         $this->groupmode = $groupmode;
     }
 
+
+    
     /**
      * Generate the fullname column.
      *
@@ -182,6 +187,29 @@ class report_table extends \table_sql {
     public function col_code($user) {
         return $user->code;
     }
+
+    /**
+     * Generate the certificate ID column (with leading zeros).
+     *
+     * @param \stdClass $user
+     * @return string
+     */
+    public function col_certificateid($user) {
+        global $DB;
+
+        // Vaikimisi placeholder ID.
+        $certificateid = '00000';  
+
+        // Leia sertifikaadi ID kasutaja ja customcerti ID põhjal.
+        $issue = $DB->get_record('customcert_issues', ['userid' => $user->id, 'customcertid' => $this->customcertid], '*', IGNORE_MULTIPLE);
+        if ($issue && !empty($issue->id)) {
+            // Lisa juhtnullid, et ID oleks kuuekohaline.
+            $certificateid = str_pad($issue->id, 6, '0', STR_PAD_LEFT);  
+        }
+
+        return $certificateid;
+    }
+
 
     /**
      * Generate the download column.
