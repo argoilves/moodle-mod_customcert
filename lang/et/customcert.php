@@ -21,6 +21,7 @@
  * 
  */
 
+$string['idnumber'] = 'Isikukood';
 $string['activity'] = 'Tegevus';
 $string['addcertpage'] = 'Lisa leht';
 $string['addelement'] = 'Lisa element';

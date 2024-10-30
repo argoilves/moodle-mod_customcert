@@ -87,21 +87,19 @@ class report_table extends \table_sql {
         }
         $columns[] = 'certificateid'; // tunnistuse ID
         $columns[] = 'code';
+        $columns[] = 'idnumber';  // Lisa uus idnumber veerg
 
         $headers = [];
+        $headers[] = get_string('idnumber', 'customcert');  // Lisa idnumber pealkiri
         $headers[] = get_string('fullname');
         foreach ($extrafields as $extrafield) {
             $headers[] = \core_user\fields::get_display_name($extrafield);
         }
         $headers[] = get_string('receiveddate', 'customcert');
-
         if ($showexpiry) {
             $headers[] = get_string('expireson', 'customcertelement_expiry');
         }
-
         $headers[] = get_string('certificateid', 'customcert');  // Lisa Tunnistuse ID veeru päis
-        $this->no_sorting('certificateid');
-
         $headers[] = get_string('code', 'customcert');
 
         // Check if we were passed a filename, which means we want to download it.
@@ -125,6 +123,8 @@ class report_table extends \table_sql {
         $this->sortable(true);
         $this->no_sorting('code');
         $this->no_sorting('download');
+        $this->no_sorting('certificateid');
+        $this->no_sorting('idnumber');
         $this->is_downloadable(true);
 
         $this->customcertid = $customcertid;
@@ -149,7 +149,21 @@ class report_table extends \table_sql {
             return fullname($user);
         }
     }
+    /**
+         * Generate the idnumber column.
+         *
+         * @param \stdClass $user
+         * @return string
+         */
+        public function col_idnumber($user) {
+            global $DB;
 
+            // Pärime kasutaja idnumber
+            $userid = $user->id; // Kasutaja ID
+            $userrecord = $DB->get_record('user', ['id' => $userid], 'idnumber'); // Pärime idnumber
+
+            return isset($userrecord->idnumber) ? $userrecord->idnumber : ''; // Tagastame idnumberi või tühi string
+        }
     /**
      * Generate the certificate time created column.
      *
