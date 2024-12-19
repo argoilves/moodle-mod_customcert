@@ -76,32 +76,13 @@ class report_table extends \table_sql {
         }
 
         $columns = [];
-        $columns[] = 'fullname';
-        foreach ($extrafields as $extrafield) {
-            $columns[] = $extrafield;
-        }
-        $columns[] = 'timecreated';
-
-        if ($showexpiry) {
-            $columns[] = 'timeexpires';
-        }
-        $columns[] = 'certificateid'; // tunnistuse ID
-        $columns[] = 'code';
-        $columns[] = 'idnumber';  // Lisa uus idnumber veerg
-
-        $headers = [];
-        $headers[] = get_string('idnumber', 'customcert');  // Lisa idnumber pealkiri
-        $headers[] = get_string('fullname');
-        foreach ($extrafields as $extrafield) {
-            $headers[] = \core_user\fields::get_display_name($extrafield);
-        }
-        $headers[] = get_string('receiveddate', 'customcert');
-        if ($showexpiry) {
-            $headers[] = get_string('expireson', 'customcertelement_expiry');
-        }
-        $headers[] = get_string('certificateid', 'customcert');  // Lisa Tunnistuse ID veeru päis
-        $headers[] = get_string('code', 'customcert');
-
+        $columns[] = 'firstname';      // Eesnimi
+        $columns[] = 'lastname';       // Perekonnanimi
+        $columns[] = 'email';          // Meiliaadress
+        $columns[] = 'idnumber';       // Isikukood
+        $columns[] = 'timecreated';    // Väljastamise kuupäev
+        $columns[] = 'code';           // Tunnistuse kood
+        $columns[] = 'certificateid';  // Tunnistuse number
         // Check if we were passed a filename, which means we want to download it.
         if ($download) {
             $this->is_downloading($download, 'customcert-report');
@@ -116,9 +97,21 @@ class report_table extends \table_sql {
             $columns[] = 'actions';
             $headers[] = '';
         }
-
         $this->define_columns($columns);
+        
+        $headers = [];
+        $headers[] = get_string('firstname');        // Eesnimi
+        $headers[] = get_string('lastname');         // Perekonnanimi
+        $headers[] = get_string('email');            // Meiliaadress
+        $headers[] = get_string('idnumber', 'customcert'); // Isikukood
+        $headers[] = get_string('receiveddate', 'customcert'); // Väljastamise kuupäev
+        $headers[] = get_string('code', 'customcert');      // Tunnistuse kood
+        $headers[] = get_string('certificateid', 'customcert'); // Tunnistuse number
+
+
+
         $this->define_headers($headers);
+      
         $this->collapsible(false);
         $this->sortable(true);
         $this->no_sorting('code');
